@@ -1,23 +1,16 @@
 public class AccountProcessor {
     
-    // PMD Violation 1: HardcodedId
-    private static final String DEFAULT_OWNER_ID = '005000000000000AAA';
-    // change
-
-    public static void processAccounts(List<Account> accountsToProcess) {
+    public static void updateAccountStatus(List<Account> accountsToProcess) {
+        List<Account> accountsToUpdate = new List<Account>();
         
         for(Account acc : accountsToProcess) {
-            acc.Description = 'Processed by system';
-            acc.OwnerId = DEFAULT_OWNER_ID;
-            
-            // PMD Violation 2: AvoidDmlStatementsInLoops
-            update acc; 
+            // The class appends the current date to the description
+            acc.Description = 'Processed on: ' + Date.today().format();
+            accountsToUpdate.add(acc);
         }
         
-        try {
-            System.debug('Account processing finished.');
-        } catch (Exception e) {
-            // PMD Violation 3: EmptyCatchBlock
+        if (!accountsToUpdate.isEmpty()) {
+            update accountsToUpdate; 
         }
     }
 }

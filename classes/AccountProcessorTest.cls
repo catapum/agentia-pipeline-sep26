@@ -1,15 +1,28 @@
 @isTest
 private class AccountProcessorTest {
+    
     @isTest
-    static void testProcessAccounts() {
-        Account testAcc = new Account(Name = 'Test PMD Account');
+    static void testUpdateAccountStatus_WillPass() {
+        // 1. Setup Data
+        Account testAcc = new Account(Name = 'Passing Test Account');
         insert testAcc;
         
+        // 2. Execute Logic
         Test.startTest();
-        AccountProcessor.processAccounts(new List<Account>{testAcc});
+        AccountProcessor.updateAccountStatus(new List<Account>{testAcc});
         Test.stopTest();
         
+        // 3. Query the result
         Account updatedAcc = [SELECT Description FROM Account WHERE Id = :testAcc.Id LIMIT 1];
-        System.assertEquals('Processed by system', updatedAcc.Description, 'Account description should be updated.');
+        
+        // 4. Passing Assertion
+        // The expected value now mirrors the dynamic date logic used in the main class
+        String expectedDescription = 'Processed on: ' + Date.today().format();
+        
+        System.assertEquals(
+            expectedDescription, 
+            updatedAcc.Description, 
+            'The description should correctly append the current date.'
+        );
     }
 }
